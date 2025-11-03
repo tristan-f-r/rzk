@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DeriveGeneric #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE FlexibleContexts #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE PolyKinds #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE Safe #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE StandaloneDeriving #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE UndecidableInstances #-}</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-comment">-----------------------------------------------------------------------------</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- Copyright   :  (C) 2008-2016 Edward Kmett</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- License     :  BSD-style (see the file LICENSE)</span><span>
+</span><span id="line-12"></span><span class="hs-comment">--</span><span>
+</span><span id="line-13"></span><span class="hs-comment">-- Maintainer  :  Edward Kmett &lt;ekmett@gmail.com&gt;</span><span>
+</span><span id="line-14"></span><span class="hs-comment">-- Stability   :  provisional</span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- Portability :  non-portable</span><span>
+</span><span id="line-16"></span><span class="hs-comment">--</span><span>
+</span><span id="line-17"></span><span class="hs-comment">----------------------------------------------------------------------------</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Data.Bifunctor.Join.html"><span class="hs-identifier">Data.Bifunctor.Join</span></a></span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier">Join</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Biapplicative.html"><span class="hs-identifier">Data.Biapplicative</span></a></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bifoldable</span></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bifoldable1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Bifoldable1</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bitraversable</span></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Foldable1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Foldable1</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Functor.Classes</span></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">GHC.Generics</span></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="annot"><span class="hs-comment">-- | Make a 'Functor' over both arguments of a 'Bifunctor'.</span></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">newtype</span><span> </span><span id="Join"><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span></span><span> </span><span id="local-6989586621679115340"><span class="annot"><a href="#local-6989586621679115340"><span class="hs-identifier hs-type">p</span></a></span></span><span> </span><span id="local-6989586621679115341"><span class="annot"><a href="#local-6989586621679115341"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Join"><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="runJoin"><span class="annot"><span class="annottext">forall {k} (p :: k -&gt; k -&gt; *) (a :: k). Join p a -&gt; p a a
+</span><a href="Data.Bifunctor.Join.html#runJoin"><span class="hs-identifier hs-var hs-var">runJoin</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679115340"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115341"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115341"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-32"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span id="local-6989586621679115601"><span id="local-6989586621679115603"><span class="annot"><span class="annottext">(forall x. Join p a -&gt; Rep (Join p a) x)
+-&gt; (forall x. Rep (Join p a) x -&gt; Join p a) -&gt; Generic (Join p a)
+forall x. Rep (Join p a) x -&gt; Join p a
+forall x. Join p a -&gt; Rep (Join p a) x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+forall k (p :: k -&gt; k -&gt; *) (a :: k) x.
+Rep (Join p a) x -&gt; Join p a
+forall k (p :: k -&gt; k -&gt; *) (a :: k) x.
+Join p a -&gt; Rep (Join p a) x
+$cfrom :: forall k (p :: k -&gt; k -&gt; *) (a :: k) x.
+Join p a -&gt; Rep (Join p a) x
+from :: forall x. Join p a -&gt; Rep (Join p a) x
+$cto :: forall k (p :: k -&gt; k -&gt; *) (a :: k) x.
+Rep (Join p a) x -&gt; Join p a
+to :: forall x. Rep (Join p a) x -&gt; Join p a
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Generic</span></span></span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span id="local-6989586621679115363"><span id="local-6989586621679115364"><span id="local-6989586621679115610"><span id="local-6989586621679115614"><span class="hs-keyword">deriving</span><span> </span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span>   </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679115363"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115364"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115364"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span>   </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115363"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115364"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span></span></span><span>
+</span><span id="line-35"></span><span id="local-6989586621679115370"><span id="local-6989586621679115371"><span id="local-6989586621679115625"><span id="local-6989586621679115629"><span id="local-6989586621679115633"><span id="local-6989586621679115637"><span id="local-6989586621679115641"><span id="local-6989586621679115645"><span id="local-6989586621679115649"><span class="hs-keyword">deriving</span><span> </span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679115370"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115371"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115371"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115370"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115371"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span></span></span></span></span></span></span></span><span>
+</span><span id="line-36"></span><span id="local-6989586621679115378"><span id="local-6989586621679115379"><span id="local-6989586621679115663"><span id="local-6989586621679115668"><span id="local-6989586621679115672"><span class="hs-keyword">deriving</span><span> </span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679115378"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115379"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115379"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115378"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115379"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span></span></span></span><span>
+</span><span id="line-37"></span><span id="local-6989586621679115387"><span id="local-6989586621679115388"><span id="local-6989586621679115678"><span id="local-6989586621679115682"><span id="local-6989586621679115685"><span id="local-6989586621679115694"><span class="hs-keyword">deriving</span><span> </span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Read</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679115387"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115388"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115388"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Read</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115387"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115388"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span></span></span></span></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115398"><span class="annot"><span class="hs-identifier hs-type">Eq2</span></span><span> </span><span class="annot"><a href="#local-6989586621679115398"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115398"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-40"></span><span>  </span><span id="local-6989586621679115711"><span class="annot"><span class="annottext">liftEq :: forall a b. (a -&gt; b -&gt; Bool) -&gt; Join p a -&gt; Join p b -&gt; Bool
+</span><a href="#local-6989586621679115711"><span class="hs-identifier hs-var hs-var hs-var">liftEq</span></a></span></span><span> </span><span id="local-6989586621679115713"><span class="annot"><span class="annottext">a -&gt; b -&gt; Bool
+</span><a href="#local-6989586621679115713"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115714"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115714"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115715"><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115715"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; b -&gt; Bool) -&gt; (a -&gt; b -&gt; Bool) -&gt; p a a -&gt; p b b -&gt; Bool
+forall a b c d.
+(a -&gt; b -&gt; Bool) -&gt; (c -&gt; d -&gt; Bool) -&gt; p a c -&gt; p b d -&gt; Bool
+forall (f :: * -&gt; * -&gt; *) a b c d.
+Eq2 f =&gt;
+(a -&gt; b -&gt; Bool) -&gt; (c -&gt; d -&gt; Bool) -&gt; f a c -&gt; f b d -&gt; Bool
+</span><span class="hs-identifier hs-var">liftEq2</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; Bool
+</span><a href="#local-6989586621679115713"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; Bool
+</span><a href="#local-6989586621679115713"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115714"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115715"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115414"><span class="annot"><span class="hs-identifier hs-type">Ord2</span></span><span> </span><span class="annot"><a href="#local-6989586621679115414"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115414"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-43"></span><span>  </span><span id="local-6989586621679115732"><span class="annot"><span class="annottext">liftCompare :: forall a b.
+(a -&gt; b -&gt; Ordering) -&gt; Join p a -&gt; Join p b -&gt; Ordering
+</span><a href="#local-6989586621679115732"><span class="hs-identifier hs-var hs-var hs-var">liftCompare</span></a></span></span><span> </span><span id="local-6989586621679115734"><span class="annot"><span class="annottext">a -&gt; b -&gt; Ordering
+</span><a href="#local-6989586621679115734"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115735"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115735"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115736"><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115736"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; b -&gt; Ordering)
+-&gt; (a -&gt; b -&gt; Ordering) -&gt; p a a -&gt; p b b -&gt; Ordering
+forall a b c d.
+(a -&gt; b -&gt; Ordering)
+-&gt; (c -&gt; d -&gt; Ordering) -&gt; p a c -&gt; p b d -&gt; Ordering
+forall (f :: * -&gt; * -&gt; *) a b c d.
+Ord2 f =&gt;
+(a -&gt; b -&gt; Ordering)
+-&gt; (c -&gt; d -&gt; Ordering) -&gt; f a c -&gt; f b d -&gt; Ordering
+</span><span class="hs-identifier hs-var">liftCompare2</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; Ordering
+</span><a href="#local-6989586621679115734"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; Ordering
+</span><a href="#local-6989586621679115734"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115735"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115736"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115432"><span id="local-6989586621679115743"><span id="local-6989586621679115747"><span id="local-6989586621679115750"><span class="annot"><span class="hs-identifier hs-type">Read2</span></span><span> </span><span class="annot"><a href="#local-6989586621679115432"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Read1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115432"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>  </span><span id="local-6989586621679115773"><span class="annot"><span class="annottext">liftReadsPrec :: forall a. (Int -&gt; ReadS a) -&gt; ReadS [a] -&gt; Int -&gt; ReadS (Join p a)
+</span><a href="#local-6989586621679115773"><span class="hs-identifier hs-var hs-var hs-var">liftReadsPrec</span></a></span></span><span> </span><span id="local-6989586621679115775"><span class="annot"><span class="annottext">Int -&gt; ReadS a
+</span><a href="#local-6989586621679115775"><span class="hs-identifier hs-var">rp1</span></a></span></span><span> </span><span id="local-6989586621679115776"><span class="annot"><span class="annottext">ReadS [a]
+</span><a href="#local-6989586621679115776"><span class="hs-identifier hs-var">rl1</span></a></span></span><span> </span><span id="local-6989586621679115777"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679115777"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; ReadS (Join p a) -&gt; ReadS (Join p a)
+forall a. Bool -&gt; ReadS a -&gt; ReadS a
+</span><span class="hs-identifier hs-var">readParen</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679115777"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">10</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ReadS (Join p a) -&gt; ReadS (Join p a))
+-&gt; ReadS (Join p a) -&gt; ReadS (Join p a)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679115779"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679115779"><span class="hs-identifier hs-var">s0</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;Join&quot;</span></span><span class="hs-special">,</span><span>    </span><span id="local-6989586621679115780"><span class="annot"><a href="#local-6989586621679115780"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReadS String
+</span><span class="hs-identifier hs-var">lex</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679115779"><span class="hs-identifier hs-var">s0</span></a></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;{&quot;</span></span><span class="hs-special">,</span><span>       </span><span id="local-6989586621679115782"><span class="annot"><a href="#local-6989586621679115782"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="hs-identifier hs-type">lex</span></span><span> </span><span class="annot"><a href="#local-6989586621679115780"><span class="hs-identifier hs-type">s1</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;runJoin&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679115783"><span class="annot"><a href="#local-6989586621679115783"><span class="hs-identifier hs-var">s3</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="hs-identifier hs-type">lex</span></span><span> </span><span class="annot"><a href="#local-6989586621679115782"><span class="hs-identifier hs-type">s2</span></a></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679115784"><span class="annot"><a href="#local-6989586621679115784"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span>         </span><span id="local-6989586621679115785"><span class="annot"><a href="#local-6989586621679115785"><span class="hs-identifier hs-var">s4</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="hs-identifier hs-type">liftReadsPrec2</span></span><span> </span><span class="annot"><a href="#local-6989586621679115775"><span class="hs-identifier hs-type">rp1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115776"><span class="hs-identifier hs-type">rl1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115775"><span class="hs-identifier hs-type">rp1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115776"><span class="hs-identifier hs-type">rl1</span></a></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="annot"><a href="#local-6989586621679115783"><span class="hs-identifier hs-type">s3</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;}&quot;</span></span><span class="hs-special">,</span><span>       </span><span id="local-6989586621679115787"><span class="annot"><a href="#local-6989586621679115787"><span class="hs-identifier hs-var">s5</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="hs-identifier hs-type">lex</span></span><span> </span><span class="annot"><a href="#local-6989586621679115785"><span class="hs-identifier hs-type">s4</span></a></span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115784"><span class="hs-identifier hs-type">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679115787"><span class="hs-identifier hs-type">s5</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115453"><span id="local-6989586621679115793"><span class="annot"><span class="hs-identifier hs-type">Show2</span></span><span> </span><span class="annot"><a href="#local-6989586621679115453"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115453"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-55"></span><span>  </span><span id="local-6989586621679115804"><span class="annot"><span class="annottext">liftShowsPrec :: forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; Join p a -&gt; ShowS
+</span><a href="#local-6989586621679115804"><span class="hs-identifier hs-var hs-var hs-var">liftShowsPrec</span></a></span></span><span> </span><span id="local-6989586621679115806"><span class="annot"><span class="annottext">Int -&gt; a -&gt; ShowS
+</span><a href="#local-6989586621679115806"><span class="hs-identifier hs-var">sp1</span></a></span></span><span> </span><span id="local-6989586621679115807"><span class="annot"><span class="annottext">[a] -&gt; ShowS
+</span><a href="#local-6989586621679115807"><span class="hs-identifier hs-var">sl1</span></a></span></span><span> </span><span id="local-6989586621679115808"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679115808"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115809"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115809"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; ShowS -&gt; ShowS
+</span><span class="hs-identifier hs-var">showParen</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679115808"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">10</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ShowS -&gt; ShowS) -&gt; ShowS -&gt; ShowS
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-56"></span><span>      </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span class="hs-identifier hs-var">showString</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Join {runJoin = &quot;</span></span><span>
+</span><span id="line-57"></span><span>    </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; Int
+-&gt; p a a
+-&gt; ShowS
+forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; Int
+-&gt; p a b
+-&gt; ShowS
+forall (f :: * -&gt; * -&gt; *) a b.
+Show2 f =&gt;
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; Int
+-&gt; f a b
+-&gt; ShowS
+</span><span class="hs-identifier hs-var">liftShowsPrec2</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; a -&gt; ShowS
+</span><a href="#local-6989586621679115806"><span class="hs-identifier hs-var">sp1</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; ShowS
+</span><a href="#local-6989586621679115807"><span class="hs-identifier hs-var">sl1</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; a -&gt; ShowS
+</span><a href="#local-6989586621679115806"><span class="hs-identifier hs-var">sp1</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; ShowS
+</span><a href="#local-6989586621679115807"><span class="hs-identifier hs-var">sl1</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115809"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; ShowS
+</span><span class="hs-identifier hs-var">showChar</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'}'</span></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115467"><span id="local-6989586621679115818"><span class="annot"><span class="hs-identifier hs-type">Bifunctor</span></span><span> </span><span class="annot"><a href="#local-6989586621679115467"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Functor</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115467"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-61"></span><span>  </span><span id="local-6989586621679115823"><span class="annot"><span class="annottext">fmap :: forall a b. (a -&gt; b) -&gt; Join p a -&gt; Join p b
+</span><span class="hs-identifier hs-var hs-var hs-var">fmap</span></span></span><span> </span><span id="local-6989586621679115824"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679115824"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115825"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115825"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p b b -&gt; Join p b
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(a -&gt; b) -&gt; (a -&gt; b) -&gt; p a a -&gt; p b b
+forall a b c d. (a -&gt; b) -&gt; (c -&gt; d) -&gt; p a c -&gt; p b d
+forall (p :: * -&gt; * -&gt; *) a b c d.
+Bifunctor p =&gt;
+(a -&gt; b) -&gt; (c -&gt; d) -&gt; p a c -&gt; p b d
+</span><span class="hs-identifier hs-var">bimap</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679115824"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679115824"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115825"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">fmap</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115489"><span id="local-6989586621679115834"><span class="annot"><a href="Data.Biapplicative.html#Biapplicative"><span class="hs-identifier hs-type">Biapplicative</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115489"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Applicative</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115489"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-65"></span><span>  </span><span id="local-6989586621679115842"><span class="annot"><span class="annottext">pure :: forall a. a -&gt; Join p a
+</span><span class="hs-identifier hs-var hs-var hs-var">pure</span></span></span><span> </span><span id="local-6989586621679115843"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679115843"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p a a -&gt; Join p a
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; a -&gt; p a a
+forall a b. a -&gt; b -&gt; p a b
+forall (p :: * -&gt; * -&gt; *) a b. Biapplicative p =&gt; a -&gt; b -&gt; p a b
+</span><a href="Data.Biapplicative.html#bipure"><span class="hs-identifier hs-var">bipure</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679115843"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679115843"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-66"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">pure</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-67"></span><span>  </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115846"><span class="annot"><span class="annottext">p (a -&gt; b) (a -&gt; b)
+</span><a href="#local-6989586621679115846"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679115847"><span class="annot"><span class="annottext">&lt;*&gt; :: forall a b. Join p (a -&gt; b) -&gt; Join p a -&gt; Join p b
+</span><span class="hs-operator hs-var hs-var hs-var">&lt;*&gt;</span></span></span><span> </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115848"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115848"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p b b -&gt; Join p b
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p (a -&gt; b) (a -&gt; b)
+</span><a href="#local-6989586621679115846"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p (a -&gt; b) (a -&gt; b) -&gt; p a a -&gt; p b b
+forall a b c d. p (a -&gt; b) (c -&gt; d) -&gt; p a c -&gt; p b d
+forall (p :: * -&gt; * -&gt; *) a b c d.
+Biapplicative p =&gt;
+p (a -&gt; b) (c -&gt; d) -&gt; p a c -&gt; p b d
+</span><a href="Data.Biapplicative.html#%3C%3C%2A%3E%3E"><span class="hs-operator hs-var">&lt;&lt;*&gt;&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115848"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">(</span><span class="hs-pragma">&lt;*&gt;</span><span class="hs-pragma">)</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-69"></span><span>  </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115851"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115851"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679115852"><span class="annot"><span class="annottext">*&gt; :: forall a b. Join p a -&gt; Join p b -&gt; Join p b
+</span><span class="hs-operator hs-var hs-var hs-var">*&gt;</span></span></span><span> </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115853"><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115853"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p b b -&gt; Join p b
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115851"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">p a a -&gt; p b b -&gt; p b b
+forall a b c d. p a b -&gt; p c d -&gt; p c d
+forall (p :: * -&gt; * -&gt; *) a b c d.
+Biapplicative p =&gt;
+p a b -&gt; p c d -&gt; p c d
+</span><a href="Data.Biapplicative.html#%2A%3E%3E"><span class="hs-operator hs-var">*&gt;&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115853"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-70"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">(</span><span class="hs-pragma">*&gt;</span><span class="hs-pragma">)</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-71"></span><span>  </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115856"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115856"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679115857"><span class="annot"><span class="annottext">&lt;* :: forall a b. Join p a -&gt; Join p b -&gt; Join p a
+</span><a href="#local-6989586621679115857"><span class="hs-operator hs-var hs-var hs-var">&lt;*</span></a></span></span><span> </span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115859"><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115859"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p a a -&gt; Join p a
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115856"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">p a a -&gt; p b b -&gt; p a a
+forall a b c d. p a b -&gt; p c d -&gt; p a b
+forall (p :: * -&gt; * -&gt; *) a b c d.
+Biapplicative p =&gt;
+p a b -&gt; p c d -&gt; p a b
+</span><a href="Data.Biapplicative.html#%3C%3C%2A"><span class="hs-operator hs-var">&lt;&lt;*</span></a></span><span> </span><span class="annot"><span class="annottext">p b b
+</span><a href="#local-6989586621679115859"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">(</span><span class="hs-pragma">&lt;*</span><span class="hs-pragma">)</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115535"><span id="local-6989586621679115863"><span id="local-6989586621679115870"><span id="local-6989586621679115875"><span id="local-6989586621679115878"><span id="local-6989586621679115881"><span id="local-6989586621679115884"><span id="local-6989586621679115887"><span id="local-6989586621679115890"><span id="local-6989586621679115893"><span id="local-6989586621679115896"><span id="local-6989586621679115899"><span id="local-6989586621679115902"><span id="local-6989586621679115907"><span id="local-6989586621679115912"><span id="local-6989586621679115917"><span id="local-6989586621679115922"><span class="annot"><span class="hs-identifier hs-type">Bifoldable</span></span><span> </span><span class="annot"><a href="#local-6989586621679115535"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Foldable</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115535"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-75"></span><span>  </span><span id="local-6989586621679115930"><span class="annot"><span class="annottext">foldMap :: forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Join p a -&gt; m
+</span><a href="#local-6989586621679115930"><span class="hs-identifier hs-var hs-var hs-var">foldMap</span></a></span></span><span> </span><span id="local-6989586621679115932"><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115932"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115933"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115933"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; m) -&gt; (a -&gt; m) -&gt; p a a -&gt; m
+forall m a b. Monoid m =&gt; (a -&gt; m) -&gt; (b -&gt; m) -&gt; p a b -&gt; m
+forall (p :: * -&gt; * -&gt; *) m a b.
+(Bifoldable p, Monoid m) =&gt;
+(a -&gt; m) -&gt; (b -&gt; m) -&gt; p a b -&gt; m
+</span><span class="hs-identifier hs-var">bifoldMap</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115932"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115932"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115933"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-76"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">foldMap</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115561"><span id="local-6989586621679115940"><span id="local-6989586621679115947"><span id="local-6989586621679115952"><span id="local-6989586621679115955"><span id="local-6989586621679115960"><span id="local-6989586621679115965"><span id="local-6989586621679115968"><span id="local-6989586621679115971"><span id="local-6989586621679115974"><span id="local-6989586621679115977"><span id="local-6989586621679115980"><span class="annot"><span class="hs-identifier hs-type">Bifoldable1</span></span><span> </span><span class="annot"><a href="#local-6989586621679115561"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Foldable1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115561"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span></span></span></span></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-79"></span><span>  </span><span id="local-6989586621679115987"><span class="annot"><span class="annottext">foldMap1 :: forall m a. Semigroup m =&gt; (a -&gt; m) -&gt; Join p a -&gt; m
+</span><a href="#local-6989586621679115987"><span class="hs-identifier hs-var hs-var hs-var">foldMap1</span></a></span></span><span> </span><span id="local-6989586621679115989"><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115989"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679115990"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115990"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; m) -&gt; (a -&gt; m) -&gt; p a a -&gt; m
+forall m a b. Semigroup m =&gt; (a -&gt; m) -&gt; (b -&gt; m) -&gt; p a b -&gt; m
+forall (t :: * -&gt; * -&gt; *) m a b.
+(Bifoldable1 t, Semigroup m) =&gt;
+(a -&gt; m) -&gt; (b -&gt; m) -&gt; t a b -&gt; m
+</span><span class="hs-identifier hs-var">bifoldMap1</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115989"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; m
+</span><a href="#local-6989586621679115989"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679115990"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-80"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">foldMap1</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-81"></span><span>
+</span><span id="line-82"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679115583"><span id="local-6989586621679116002"><span id="local-6989586621679116008"><span class="annot"><span class="hs-identifier hs-type">Bitraversable</span></span><span> </span><span class="annot"><a href="#local-6989586621679115583"><span class="hs-identifier hs-type">p</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Traversable</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679115583"><span class="hs-identifier hs-type">p</span></a></span><span class="hs-special">)</span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-83"></span><span>  </span><span id="local-6989586621679116021"><span class="annot"><span class="annottext">traverse :: forall (f :: * -&gt; *) a b.
+Applicative f =&gt;
+(a -&gt; f b) -&gt; Join p a -&gt; f (Join p b)
+</span><a href="#local-6989586621679116021"><span class="hs-identifier hs-var hs-var hs-var">traverse</span></a></span></span><span> </span><span id="local-6989586621679116023"><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679116023"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679116024"><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679116024"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(p b b -&gt; Join p b) -&gt; f (p b b) -&gt; f (Join p b)
+forall a b. (a -&gt; b) -&gt; f a -&gt; f b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">p b b -&gt; Join p b
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(a -&gt; f b) -&gt; (a -&gt; f b) -&gt; p a a -&gt; f (p b b)
+forall (f :: * -&gt; *) a c b d.
+Applicative f =&gt;
+(a -&gt; f c) -&gt; (b -&gt; f d) -&gt; p a b -&gt; f (p c d)
+forall (t :: * -&gt; * -&gt; *) (f :: * -&gt; *) a c b d.
+(Bitraversable t, Applicative f) =&gt;
+(a -&gt; f c) -&gt; (b -&gt; f d) -&gt; t a b -&gt; f (t c d)
+</span><span class="hs-identifier hs-var">bitraverse</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679116023"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679116023"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">p a a
+</span><a href="#local-6989586621679116024"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">traverse</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-85"></span><span>  </span><span id="local-6989586621679116031"><span class="annot"><span class="annottext">sequenceA :: forall (f :: * -&gt; *) a.
+Applicative f =&gt;
+Join p (f a) -&gt; f (Join p a)
+</span><a href="#local-6989586621679116031"><span class="hs-identifier hs-var hs-var hs-var">sequenceA</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-type">Join</span></a></span><span> </span><span id="local-6989586621679116033"><span class="annot"><span class="annottext">p (f a) (f a)
+</span><a href="#local-6989586621679116033"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(p a a -&gt; Join p a) -&gt; f (p a a) -&gt; f (Join p a)
+forall a b. (a -&gt; b) -&gt; f a -&gt; f b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">p a a -&gt; Join p a
+forall {k} (p :: k -&gt; k -&gt; *) (a :: k). p a a -&gt; Join p a
+</span><a href="Data.Bifunctor.Join.html#Join"><span class="hs-identifier hs-var">Join</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p (f a) (f a) -&gt; f (p a a)
+forall (t :: * -&gt; * -&gt; *) (f :: * -&gt; *) a b.
+(Bitraversable t, Applicative f) =&gt;
+t (f a) (f b) -&gt; f (t a b)
+</span><span class="hs-identifier hs-var">bisequenceA</span></span><span> </span><span class="annot"><span class="annottext">p (f a) (f a)
+</span><a href="#local-6989586621679116033"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-86"></span><span>  </span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><span class="hs-pragma hs-type">sequenceA</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-87"></span></pre></body></html>
